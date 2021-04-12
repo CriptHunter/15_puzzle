@@ -56,12 +56,12 @@ public class GridManager : MonoBehaviour {
     }
 
     private void moveBlock(Transform block, SwipeDirection dir) {
-        if(!sw.running) // if timer is already running don't restart it
-            sw.Go();
-
         // if it is not a valid move return, else move block in the swipe direction
         if (!gridHandler.isValidMove(block.GetComponent<Tile>().Number, dir))
             return;
+
+        if(!sw.running) // if timer is already running don't restart it
+            sw.Go();
 
         if(dir == SwipeDirection.Up)
             block.transform.position = new Vector2(block.transform.position.x, block.transform.position.y + 1);
