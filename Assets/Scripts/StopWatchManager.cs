@@ -21,18 +21,29 @@ public class StopWatchManager : MonoBehaviour {
         running = true;
     }
 
-    // reset the timer to start a new game
+    // stop the stopwatch but don't reset it
+    public void Stop() {
+        StopCoroutine("UpdateStopWatchText");
+        running = false;
+        sw.Stop();
+    }
+
+    // reset the stopwatch to start a new game
     public void Reset() {
         sw = new Stopwatch();
         running = false;
         txt.text = "00:00:00";
     }
 
-    // update the timer slower than  unity Update() method
+    public string GetCurrentValue() {
+        return sw.Elapsed.ToString(@"mm\:ss\:ff");
+    }
+
+    // update the text displaying the stopwatch slower than unity Update() method
     IEnumerator UpdateStopWatchText() {
         for(;;) {
             txt.text = sw.Elapsed.ToString(@"mm\:ss\:ff");
-            yield return new WaitForSeconds(.1f);
+            yield return new WaitForSeconds(.25f);
         }
     }
 }

@@ -20,6 +20,12 @@ public class GridManager : MonoBehaviour {
         StartGame();
     }
 
+    void Update() {
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            GetComponent<RecordManager>().AddEntry(sw.GetCurrentValue());
+        }
+    }
+
     public void StartGame() {
         sw.Reset();  // reset the stopwatch to 00:00:00
         gridHandler = new GridHandler(row);  // create the grid that hold tiles position
@@ -74,7 +80,11 @@ public class GridManager : MonoBehaviour {
 
         audioSource.PlayOneShot(tileMoving);
 
-        print("won: " + gridHandler.isWon());
+        if(gridHandler.isWon()) {
+            print("You have won");
+            sw.Stop();
+            GetComponent<RecordManager>().AddEntry(sw.GetCurrentValue());
+        }
     }
 
 }
