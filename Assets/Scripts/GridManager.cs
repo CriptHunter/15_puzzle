@@ -9,6 +9,7 @@ public class GridManager : MonoBehaviour {
     private StopWatchManager sw;
     [SerializeField] private AudioClip tileMoving;
     private AudioSource audioSource;
+    [SerializeField] private GameObject particleSys;
 
     void Awake() {
         SwipeDetector.OnSwipe += SwipeDetector_OnSwipe;
@@ -32,6 +33,10 @@ public class GridManager : MonoBehaviour {
         print(gridHandler);
         DestroyTiles(); // destroy tiles if it is not the first game
         SpawnTiles();  // spawn tiles gameobject
+    }
+
+    public void PauseGame() {
+        sw.Stop();
     }
 
     // Spawn tiles for the first time
@@ -62,6 +67,10 @@ public class GridManager : MonoBehaviour {
     }
 
     private void moveBlock(Transform block, SwipeDirection dir) {
+        // if the game is won the user cannot move tiles, he should start a new game
+        if(gridHandler.isWon())
+            return;
+
         // if it is not a valid move return, else move block in the swipe direction
         if (!gridHandler.isValidMove(block.GetComponent<Tile>().Number, dir))
             return;
@@ -82,8 +91,12 @@ public class GridManager : MonoBehaviour {
 
         if(gridHandler.isWon()) {
             print("You have won");
-            sw.Stop();
-            GetComponent<RecordManager>().AddEntry(sw.GetCurrentValue());
+            sw.Stop(); 
+            GetComponent<RecordManager>().AddEntry(sw.GetCurrentValue()); // save stopwatch time
+            // Play confetti animation
+            ParticleSystem[] particleArray = particleSys.GetComponentsInChildren<ParticleSystem>();
+            foreach (var ps in particleArray)
+                ps.Play();
         }
     }
 
